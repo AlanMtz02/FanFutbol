@@ -34,27 +34,27 @@ def listar_torneos(db:Session=Depends(get_db)):
     return torneos
     
     
-@torneos_router.get('/{torneo_id}',response_model=TorneoOutSchema)
-def obtener_torneo(torneo_id:int,db:Session=Depends(get_db)):
+@torneos_router.get('/{id}',response_model=TorneoOutSchema)
+def obtener_torneo(id:int,db:Session=Depends(get_db)):
     """
     Ruta Pública: Retorna la información detallada de un torneo por su ID.
     """
     #Validar que exista el torneo
-    torneo=db.query(Torneo).filter(Torneo.id==torneo_id).first()
+    torneo=db.query(Torneo).filter(Torneo.id==id).first()
     if not torneo:
         raise HTTPException(status_code=404,detail='Torneo no encontrado.')
     
     return torneo
 
 #REQUIERE TOKEN
-@torneos_router.patch('/{torneo_id}/finalizar',response_model=TorneoOutSchema)
-def finalizar_torneo(torneo_id:int,datos:TorneoFinalizarSchema,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
+@torneos_router.patch('/{id}/finalizar',response_model=TorneoOutSchema)
+def finalizar_torneo(id:int,datos:TorneoFinalizarSchema,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
     """
     Ruta Privada (Admin): Cambia el estado del torneo a 'finalizado'
     y asigna el ID del equipo campeón para el Palmarés.
     """
     #Validar que exista el torneo que quiere finalizar
-    torneo=db.query(Torneo).filter(Torneo.id==torneo_id).first()
+    torneo=db.query(Torneo).filter(Torneo.id==id).first()
     if not torneo:
         raise HTTPException(status_code=404,detail='Torneo no encontrado.')
     
