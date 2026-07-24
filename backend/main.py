@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from routes.auth import auth_router
+from routes.torneos import torneos_router
 from models.usuario import Usuario
 from models.equipo import Equipo
 from models.jornada import Jornada
@@ -8,6 +9,7 @@ from models.torneo import Torneo
 from models.torneoequipo import TorneoEquipo
 from config.db import engine,Base
 from fastapi.middleware.cors import CORSMiddleware
+
 # Crear las tablas automáticamente en MySQL al iniciar
 Base.metadata.create_all(bind=engine)
 
@@ -29,6 +31,7 @@ app.add_middleware(
 
 #Incluir routers
 app.include_router(auth_router)
+app.include_router(torneos_router)
 
 @app.get('/')
 def Bienvenida():
