@@ -5,6 +5,7 @@ from schemas.auth import UsuarioLoginSchema,TokenOutSchema,UsuarioCreateSchema,U
 from models.usuario import Usuario
 from utils.seguridad import verify_password,hash_password
 from utils.jwt import crear_token
+from utils.seguridad import obtener_usuario_actual
 
 auth_router=APIRouter(prefix='/api/auth',tags=['Autenticación'])
 
@@ -43,3 +44,18 @@ def crear_administrador(data:UsuarioCreateSchema,db:Session=Depends(get_db)):
     db.refresh(nuevo_admin)
     return nuevo_admin
 
+
+@auth_router.get('/me', response_model=UsuarioOutSchema)
+def obtener_perfil_usuario(
+    usuario_actual: dict = Depends(obtener_usuario_actual),
+    db: Session = Depends(get_db)
+):
+    """
+    Ruta Privada (Admin): Recibe el Token JWT y valida si sigue activo.
+    Retorna la información del usuario logueado.
+    """
+    usuario = db.query(Usuario).filter(Usuario.id == usuario_actual["id"]).first()
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado.")
+
+    return usuario
