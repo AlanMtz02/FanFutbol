@@ -11,7 +11,7 @@ equipos_router=APIRouter(tags=['Equipos'])
 
 #Inscribir equipo en un torneo
 #Necesita token
-@equipos_router.post('/api/torneos/{id}/equipos',response_model=list[EquipoOutSchema])
+@equipos_router.post('/api/torneos/{id}/equipos',response_model=EquipoOutSchema)
 def inscribir_equipo_en_torneo(id:int,datos:CrearEquipoSchema,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
     """
     Ruta Privada (Admin): Inscribe un equipo en un torneo.

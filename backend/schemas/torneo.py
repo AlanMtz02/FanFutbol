@@ -18,6 +18,7 @@ class TorneoOutSchema(BaseModel):
     fase_actual:str
     equipo_campeon_id:Optional[int] = None #Valor por defecto
     creado_en:datetime
+    fecha_fin:Optional[str]=None #Valor por defecto
     admin_id:int
     
     class Config:
