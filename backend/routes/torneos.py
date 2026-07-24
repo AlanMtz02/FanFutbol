@@ -47,7 +47,7 @@ def obtener_torneo(torneo_id:int,db:Session=Depends(get_db)):
     return torneo
 
 #REQUIERE TOKEN
-@torneos_router.patch('/{torneo_id}',response_model=TorneoOutSchema)
+@torneos_router.patch('/{torneo_id}/finalizar',response_model=TorneoOutSchema)
 def finalizar_torneo(torneo_id:int,datos:TorneoFinalizarSchema,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
     """
     Ruta Privada (Admin): Cambia el estado del torneo a 'finalizado'
