@@ -15,5 +15,6 @@ class Torneo(Base):
     fase_actual = Column(String(30), nullable=False, default="regular")  # 'regular', 'cuartos', 'semifinal', 'final'
     equipo_campeon_id = Column(Integer, nullable=True) #Puede ser nulo  porque al crear el torneo, aun no hay campeon
     creado_en = Column(DateTime, default=datetime.now(timezone.utc))
+    fecha_fin=Column(DateTime,nullable=True)
     admin_id=Column(Integer,ForeignKey('usuarios.id'),nullable=False)#FK->Un admin puede crear MUCHOS torneos, pero un torneo siempre debe estar asociado a un solo admin
     

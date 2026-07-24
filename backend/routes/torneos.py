@@ -5,6 +5,8 @@ from schemas.torneo import CrearTorneoSchema,TorneoFinalizarSchema,TorneoOutSche
 from utils.seguridad import obtener_usuario_actual
 from models.torneo import Torneo
 from models.equipo import Equipo
+from datetime import datetime,timezone
+
 torneos_router=APIRouter(prefix='/api/torneos',tags=['Torneos'])
 
 #PIDE TOKEN
@@ -63,8 +65,11 @@ def finalizar_torneo(id:int,datos:TorneoFinalizarSchema,usuario_actual:dict=Depe
     if not equipo_existe:
         raise HTTPException(status_code=404,detail='El equipo a asignar campeón no existe.')
     
+    #Actualizar estado, equipo campeon y la fecha de finalizacion
     torneo.estado='finalizado'
     torneo.equipo_campeon_id=datos.equipo_campeon_id
+    torneo.fecha_fin=datetime.now(timezone.utc)
+    
     db.commit()
     db.refresh(torneo)
     return torneo

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from routes.auth import auth_router
 from routes.torneos import torneos_router
+from routes.equipos import equipos_router
 from models.usuario import Usuario
 from models.equipo import Equipo
 from models.jornada import Jornada
@@ -32,6 +33,7 @@ app.add_middleware(
 #Incluir routers
 app.include_router(auth_router)
 app.include_router(torneos_router)
+app.include_router(equipos_router)
 
 @app.get('/')
 def Bienvenida():
