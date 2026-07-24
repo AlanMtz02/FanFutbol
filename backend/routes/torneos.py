@@ -6,7 +6,7 @@ from utils.seguridad import obtener_usuario_actual
 from models.torneo import Torneo
 from models.equipo import Equipo
 from datetime import datetime,timezone
-
+from services.calendario import generar_calendario_round_robin
 torneos_router=APIRouter(prefix='/api/torneos',tags=['Torneos'])
 
 #PIDE TOKEN
@@ -74,4 +74,13 @@ def finalizar_torneo(id:int,datos:TorneoFinalizarSchema,usuario_actual:dict=Depe
     db.refresh(torneo)
     return torneo
     
-    
+#Generar el calendario
+#Requiere token
+@torneos_router.post('/{id}/generar-calendario')
+def generar_calendario_endpoint(id:int,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
+    """
+    Ruta Privada (Admin): Aplica el algoritmo Round Robin, genera las jornadas y 
+    partidos correspondientes, y pasa el torneo a estado 'en_curso'.
+    """
+    resultado=generar_calendario_round_robin(id,db)
+    return resultado #Diccionario con un mensaje de exito

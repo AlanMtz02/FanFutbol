@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, UniqueConstraint
-from datetime import datetime
+from datetime import datetime,timezone
 from config.db import Base
 
 class TorneoEquipo(Base):
@@ -10,7 +10,7 @@ class TorneoEquipo(Base):
     id = Column(Integer, primary_key=True, index=True)
     torneo_id = Column(Integer, ForeignKey("torneos.id"), nullable=False)
     equipo_id = Column(Integer, ForeignKey("equipos.id"), nullable=False)
-    creado_en = Column(DateTime, default=datetime.utcnow)
+    creado_en = Column(DateTime, default=datetime.now(timezone.utc))
 
     # Restricción para evitar inscribir el mismo equipo 2 veces en el mismo torneo
     __table_args__ = (
