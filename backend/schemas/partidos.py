@@ -15,7 +15,7 @@ class RecorrerJornadaSchema(BaseModel):
 class PartidoOutSchema(BaseModel):
     id:int
     equipo_local_id:int
-    equipo_visitante_id:Optional[int]=None #Valor por defecto porque puede ser partido de descanso
+    equipo_visita_id:Optional[int]=None #Valor por defecto porque puede ser partido de descanso
     goles_local:Optional[int]=None
     goles_visita:Optional[int]=None
     ganador_penales_id:Optional[int]=None

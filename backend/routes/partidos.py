@@ -28,7 +28,7 @@ def obtener_jornadas_del_torneo(id:int,db:Session=Depends(get_db)):
 #Registrar/actualizar marcador de un partido. Necesita id del partido
 #Necesita token
 @partidos_router.patch('/api/partidos/{id}',response_model=PartidoOutSchema)
-def actualzar_partido(id:int,datos:ActualizarPartidoSchema,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
+def actualizar_partido(id:int,datos:ActualizarPartidoSchema,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
     """
     Ruta Privada (Admin): Actualiza goles, ganador en penales, observaciones
     y cambia el estado del partido a 'finalizado'.
