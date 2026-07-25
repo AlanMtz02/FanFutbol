@@ -3,6 +3,7 @@ from routes.auth import auth_router
 from routes.torneos import torneos_router
 from routes.equipos import equipos_router
 from routes.partidos import partidos_router
+from routes.posiciones import posiciones_router
 from models.usuario import Usuario
 from models.equipo import Equipo
 from models.jornada import Jornada
@@ -36,6 +37,7 @@ app.include_router(auth_router)
 app.include_router(torneos_router)
 app.include_router(equipos_router)
 app.include_router(partidos_router)
+app.include_router(posiciones_router)
 
 @app.get('/')
 def Bienvenida():
