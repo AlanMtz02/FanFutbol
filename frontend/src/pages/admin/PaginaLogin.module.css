@@ -1,0 +1,86 @@
+.contenedorLogin {
+  max-width: 420px;
+  margin: 60px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.titulo {
+  text-align: center;
+  color: #1e293b;
+  margin-bottom: 24px;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.cajaError {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+.grupoInput {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: #475569;
+  margin-bottom: 6px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconoLabel {
+  color: #64748b;
+}
+
+.input {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: #2563eb;
+}
+
+.botonEnviar {
+  width: 100%;
+  padding: 12px;
+  background-color: #16a34a; /* Verde deportivo */
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap:8px;
+}
+
+.botonEnviar:hover {
+  background-color: #15803d;
+}
+
+.botonEnviar:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
