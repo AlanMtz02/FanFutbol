@@ -1,0 +1,103 @@
+.pageWrapper{
+    min-height: 100vh;
+    background-color: #f0fdf4;
+}
+
+.contentContainer{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+
+/* Contadores Superiores */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.statCard {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08),
+              0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.statYellow { background-color: #fefce8; border-color: #f9ec85; }
+.statGreen { background-color: #f0fdf4; border-color: #96f8b8; }
+.statBlue { background-color: #ffffff; border-color: #8fa7e5; }
+
+.statInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.statLabel {
+  font-size: 0.80rem;
+  font-weight: 700;
+  color: #6b7280;
+  letter-spacing: 0.05em;
+}
+
+.statValue {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #111827;
+}
+
+.iconYellow { color: #ca8a04; }
+.iconGreen { color: #16a34a; }
+.iconBlue { color: #2563eb; }
+
+/*Header Mis torneos*/
+.sectionHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.sectionTitle{
+    font-size: 1.5rem;
+    color: #111827;
+    font-weight: 800;
+}
+
+.sectionSubtitle{
+    font-size: 0.875rem;
+    color:#6b7280
+
+}
+
+.createBtn{
+    background-color: #16a34a;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background-color 0.2s;
+}
+
+.createBtn:hover{
+    background-color: #11813a;
+    
+}
+
+/* Grid de Tarjetas */
+.torneosGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}

@@ -1,86 +1,202 @@
-.contenedorLogin {
-  max-width: 420px;
-  margin: 60px auto;
-  padding: 30px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e8f0;
-}
-
-.titulo {
-  text-align: center;
-  color: #1e293b;
-  margin-bottom: 24px;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.cajaError {
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #dc2626;
-  padding: 12px;
-  border-radius: 6px;
-  margin-bottom: 20px;
-  font-size: 0.9rem;
-}
-
-.grupoInput {
-  margin-bottom: 18px;
+/* Fondo con degradado verde a azul + patrón de cuadrícula */
+.loginContainer {
+  min-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
-}
-
-.label {
-  font-size: 0.9rem;
-  color: #475569;
-  margin-bottom: 6px;
-  font-weight: 500;
-  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 6px;
+  background-color: #0b4f2c;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 80% 80%, #00429d 0%, transparent 50%),
+    radial-gradient(circle at 20% 20%, #107c41 0%, transparent 60%);
+  background-size: 30px 30px, 30px 30px, 100% 100%, 100% 100%;/*Cuadrados del fondo*/
 }
 
-.iconoLabel {
-  color: #64748b;
+/* Sección de la Marca / Logo */
+.brandContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
-.input {
-  padding: 10px 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.input:focus {
-  border-color: #2563eb;
-}
-
-.botonEnviar {
-  width: 100%;
-  padding: 12px;
-  background-color: #16a34a; /* Verde deportivo */
-  color: #ffffff;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
+.logoBadge {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap:8px;
+  margin-bottom: 12px;
 }
 
-.botonEnviar:hover {
+.trophyIcon {
+  color: #eab308; /* Color Dorado/Amarillo */
+}
+
+.brandTitle {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 2px;
+}
+
+.brandSubtitle {
+  margin: 4px 0 0 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+/* Card del Login */
+.card {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+}
+
+.cardHeader {
+  margin-bottom: 24px;
+}
+
+.cardHeader h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.cardHeader p {
+  margin: 6px 0 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+/* Formulario e Inputs */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 14px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.inputWrapper input {
+  width: 100%;
+  background-color: #f0fdf4; /* Fondo verde muy tenue */
+  border: 1px solid #dcfce7;
+  border-radius: 12px;
+  padding: 12px 14px 12px 42px;
+  font-size: 0.95rem;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.inputWrapper input:focus {
+  background-color: #ffffff;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+
+.inputWrapper input::placeholder {
+  color: #94a3b8;
+}
+
+/* Botón Ingresar */
+.btnSubmit {
+  margin-top: 6px;
+  background-color: #16a34a;
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btnSubmit:hover {
   background-color: #15803d;
 }
 
-.botonEnviar:disabled {
-  background-color: #9ca3af;
+.btnSubmit:active {
+  transform: scale(0.99);
+}
+
+.btnSubmit:disabled {
+  background-color: #86efac;
   cursor: not-allowed;
+}
+
+/* Footer de la Card */
+.cardFooter {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.btnInvitado {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.btnInvitado:hover {
+  color: #0f172a;
+}
+
+/* Mensajes de error */
+.errorMessage {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  text-align: center;
 }

@@ -1,7 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ProvedorAutenticacion } from "./context/ProveedorAutenticacion";
-import { PaginaLogin } from "./pages/admin/PaginaLogin";
 import { RutaProtegida } from "./components/RutaProtegida";
+import { AdminDashboard } from "./pages/admin/AdminDashboard";
+import PaginaLogin from "./pages/admin/PaginaLogin";
 
 // Vistas temporales de prueba
 function DashboardPrueba() {
@@ -24,7 +25,7 @@ export default function App(){
           path="/admin/dashboard"
           element={
             <RutaProtegida>
-              <DashboardPrueba></DashboardPrueba>
+              <AdminDashboard></AdminDashboard>
             </RutaProtegida>
           }
         ></Route>

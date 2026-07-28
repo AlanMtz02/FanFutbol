@@ -1,77 +1,115 @@
 import { useState } from "react";
-import { useAutenticacion } from "../../hooks/useAutenticacion";
-import estilos from './PaginaLogin.module.css';
 import { useNavigate } from "react-router-dom";
-import {Lock, LogIn, Mail, MailIcon} from 'lucide-react';
+import { Trophy, Mail, Lock, UserCheck, Eye } from "lucide-react";
+import { useAutenticacion } from "../../hooks/useAutenticacion";
 
-export function PaginaLogin() {
+// Importa tu servicio de autenticación
+import styles from "./PaginaLogin.module.css";
+
+const PaginaLogin = () => {
+  //Obtener variables de contexto
+  const {iniciarSesionUsuario}=useAutenticacion();
+  const navigate = useNavigate();
+
   const [correo, setCorreo] = useState("");
-  const [contraseña, setContraseña] = useState("");
-  const [errorMensaje, setErrorMensaje] = useState("");
-  const [cargandoEnvio, setCargandoEnvio] = useState(false);
+  const [contrasena, setContrasena] = useState("");
+  const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState(null);
 
-  const { iniciarSesionUsuario } = useAutenticacion();
-  const navegacion = useNavigate();
-
-  async function manejarEnvioFormulario(evento) {
-    evento.preventDefault(); //Evita recargar la pagina en formularios
-    setErrorMensaje("");
-    setCargandoEnvio(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setCargando(true);
 
     try {
-      await iniciarSesionUsuario(correo, contraseña);
-      // Redirige al panel del administrador si todo salió bien
-      navegacion("/admin/dashboard");
-    } catch (error) {
-      // Muestra el mensaje exacto que respondió el Backend o un error genérico
-      setErrorMensaje(error.message || "Ocurrió un error al intentar iniciar sesión.");
+      // Usamos el servicio de autenticación
+      await iniciarSesionUsuario(correo, contrasena);
+      navigate("/admin/dashboard"); // Redirige al dashboard tras login exitoso
+    } catch (err) {
+      setError(err.message);
     } finally {
-      setCargandoEnvio(false);
+      setCargando(false);
     }
-  }
+  };
 
   return (
-    <div className={estilos.contenedorLogin}>
-      <h2 className={estilos.titulo}>Iniciar Sesión - FanFutbol</h2>
-      {errorMensaje && <div className={estilos.cajaError}>{errorMensaje}</div>}
-      <form onSubmit={manejarEnvioFormulario}>
-        <div className={estilos.grupoInput}>
-          <label className={estilos.label}>
-            <MailIcon size={16} className={estilos.iconoLabel}></MailIcon>Correo
-            Electrónico:{" "}
-          </label>
-          <input
-            className={estilos.input}
-            type="email"
-            value={correo}
-            onChange={(e) => setCorreo(e.target.value)}
-            placeholder="admin@fanfutbol.com"
-            required
-          ></input>
+    <div className={styles.loginContainer}>
+      {/* Encabezado Superior / Brand */}
+      <div className={styles.brandContainer}>
+        <div className={styles.logoBadge}>
+          <Trophy size={28} className={styles.trophyIcon} />
         </div>
-        <div className={estilos.grupoInput}>
-          <label className={estilos.label}>
-            <Lock size={16} className={estilos.iconoLabel}></Lock>
-            Contraseña:{" "}
-          </label>
-          <input
-            className={estilos.input}
-            type="password"
-            value={contraseña}
-            onChange={(e) => setContraseña(e.target.value)}
-            placeholder="••••••••"
-            required
-          ></input>
+        <h1 className={styles.brandTitle}>FANFUTBOL</h1>
+        <p className={styles.brandSubtitle}>Gestión de torneos amateur</p>
+      </div>
+
+      {/* Card del Formulario */}
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <h2>Iniciar sesión</h2>
+          <p>Accede al panel de administración</p>
         </div>
-        <button
-          type="submit"
-          className={estilos.botonEnviar}
-          disabled={cargandoEnvio}
-        >
-          <LogIn size={18}></LogIn>
-          <span>{cargandoEnvio ? "Validando..." : "Entrar al panel"}</span>
-        </button>
-      </form>
+
+        {error && <div className={styles.errorMessage}>{error}</div>}
+
+        <form onSubmit={handleSubmit} className={styles.form}>
+          {/* Input Correo */}
+          <div className={styles.field}>
+            <label htmlFor="correo">Correo electrónico</label>
+            <div className={styles.inputWrapper}>
+              <Mail className={styles.inputIcon} size={18} />
+              <input
+                id="correo"
+                type="email"
+                required
+                placeholder="admin@fanfutbol.com"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Input Contraseña */}
+          <div className={styles.field}>
+            <label htmlFor="contrasena">Contraseña</label>
+            <div className={styles.inputWrapper}>
+              <Lock className={styles.inputIcon} size={18} />
+              <input
+                id="contrasena"
+                type="password"
+                required
+                placeholder="••••••"
+                value={contrasena}
+                onChange={(e) => setContrasena(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Botón Ingresar */}
+          <button
+            type="submit"
+            className={styles.btnSubmit}
+            disabled={cargando}
+          >
+            <UserCheck size={18} />
+            {cargando ? "Ingresando..." : "Ingresar al Panel"}
+          </button>
+        </form>
+
+        {/* Link Inferior */}
+        <div className={styles.cardFooter}>
+          <button
+            type="button"
+            className={styles.btnInvitado}
+            onClick={() => navigate("/torneos")}
+          >
+            <Eye size={16} />
+            <span>Ver torneos sin iniciar sesión</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default PaginaLogin;

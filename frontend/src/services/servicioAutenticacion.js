@@ -31,7 +31,7 @@ export async function obtenerUsuarioActual(){
 
     const respuesta=await fetch(`${BASE_URL}/api/auth/me`,{
         headers:{
-            'Content-Type':'application-json',
+            'Content-Type':'application/json',
             'Authorization':`Bearer ${token}`
         }
     })
