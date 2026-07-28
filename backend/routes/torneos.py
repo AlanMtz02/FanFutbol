@@ -1,12 +1,14 @@
 from fastapi import APIRouter,HTTPException,Depends
 from config.db import get_db
 from sqlalchemy.orm import Session
-from schemas.torneo import CrearTorneoSchema,TorneoFinalizarSchema,TorneoOutSchema
+from schemas.torneo import CrearTorneoSchema,TorneoFinalizarSchema,TorneoOutSchema,ResumenDashboardOutSchema
 from utils.seguridad import obtener_usuario_actual
 from models.torneo import Torneo
 from models.equipo import Equipo
 from datetime import datetime,timezone
 from services.calendario import generar_calendario_round_robin
+from sqlalchemy import func
+
 torneos_router=APIRouter(prefix='/api/torneos',tags=['Torneos'])
 
 #PIDE TOKEN
@@ -32,8 +34,20 @@ def crear_torneo(datos:CrearTorneoSchema,usuario_actual:dict=Depends(obtener_usu
 @torneos_router.get('',response_model=list[TorneoOutSchema])
 def listar_torneos(db:Session=Depends(get_db)):
     """Ruta Pública: Lista todos los torneos registrados en el sistema."""
-    torneos=db.query(Torneo).order_by(Torneo.creado_en.desc()).all()#Primero los mas recientes
-    return torneos
+    torneos = db.query(Torneo).order_by(Torneo.creado_en.desc()).all()
+    resultado = []
+    for t in torneos:
+        nombre_campeon = None
+        if t.equipo_campeon_id:
+            equipo = db.query(Equipo).filter(
+                Equipo.id == t.equipo_campeon_id).first()
+            if equipo:
+                nombre_campeon = equipo.nombre
+        resultado.append({
+            **vars(t),
+            "nombre_campeon": nombre_campeon
+        })
+    return resultado
     
     
 @torneos_router.get('/{id}',response_model=TorneoOutSchema)
@@ -41,39 +55,57 @@ def obtener_torneo(id:int,db:Session=Depends(get_db)):
     """
     Ruta Pública: Retorna la información detallada de un torneo por su ID.
     """
-    #Validar que exista el torneo
-    torneo=db.query(Torneo).filter(Torneo.id==id).first()
+    torneo = db.query(Torneo).filter(Torneo.id == id).first()
     if not torneo:
-        raise HTTPException(status_code=404,detail='Torneo no encontrado.')
-    
-    return torneo
+        raise HTTPException(status_code=404, detail='Torneo no encontrado.')
 
-#REQUIERE TOKEN
-@torneos_router.patch('/{id}/finalizar',response_model=TorneoOutSchema)
-def finalizar_torneo(id:int,datos:TorneoFinalizarSchema,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
+    nombre_campeon = None
+    if torneo.equipo_campeon_id:
+        equipo = db.query(Equipo).filter(
+            Equipo.id == torneo.equipo_campeon_id).first()
+        if equipo:
+            nombre_campeon = equipo.nombre
+
+    return {**vars(torneo), "nombre_campeon": nombre_campeon}
+
+# REQUIERE TOKEN
+@torneos_router.patch('/{id}/finalizar', response_model=TorneoOutSchema)
+def finalizar_torneo(
+    id: int,
+    datos: TorneoFinalizarSchema,
+    usuario_actual: dict = Depends(obtener_usuario_actual),
+    db: Session = Depends(get_db)
+):
     """
     Ruta Privada (Admin): Cambia el estado del torneo a 'finalizado'
     y asigna el ID del equipo campeón para el Palmarés.
     """
-    #Validar que exista el torneo que quiere finalizar
-    torneo=db.query(Torneo).filter(Torneo.id==id).first()
+    # Validar que exista el torneo
+    torneo = db.query(Torneo).filter(Torneo.id == id).first()
     if not torneo:
-        raise HTTPException(status_code=404,detail='Torneo no encontrado.')
-    
-    #Validar antes de que exista el equipo antes de asignarlo como campeon
-    equipo_existe=db.query(Equipo).filter(Equipo.id==datos.equipo_campeon_id).first()
+        raise HTTPException(status_code=404, detail='Torneo no encontrado.')
+
+    # Validar que exista el equipo campeón
+    equipo_existe = db.query(Equipo).filter(
+        Equipo.id == datos.equipo_campeon_id).first()
     if not equipo_existe:
-        raise HTTPException(status_code=404,detail='El equipo a asignar campeón no existe.')
-    
-    #Actualizar estado, equipo campeon y la fecha de finalizacion
-    torneo.estado='finalizado'
-    torneo.equipo_campeon_id=datos.equipo_campeon_id
-    torneo.fecha_fin=datetime.now(timezone.utc)
-    
+        raise HTTPException(
+            status_code=404, detail='El equipo a asignar campeón no existe.')
+
+    # Actualizar estado, equipo campeón y fecha de finalización
+    torneo.estado = 'finalizado'
+    torneo.equipo_campeon_id = datos.equipo_campeon_id
+    torneo.fecha_fin = datetime.now(timezone.utc)
+
     db.commit()
     db.refresh(torneo)
-    return torneo
-    
+
+    # Resolver nombre del campeón
+    nombre_campeon = equipo_existe.nombre if equipo_existe else None
+
+    # Devolver torneo con campo extra
+    return {**vars(torneo), "nombre_campeon": nombre_campeon}
+
 #Generar el calendario
 #Requiere token
 @torneos_router.post('/{id}/generar-calendario')
@@ -84,3 +116,26 @@ def generar_calendario_endpoint(id:int,usuario_actual:dict=Depends(obtener_usuar
     """
     resultado=generar_calendario_round_robin(id,db)
     return resultado #Diccionario con un mensaje de exito
+
+#Requiere token
+@torneos_router.get('/dashboard/resumen', response_model=ResumenDashboardOutSchema)
+def obtener_resumen_dashboard(
+    usuario_actual: dict = Depends(obtener_usuario_actual),
+    db: Session = Depends(get_db)
+):
+    """
+    Ruta Privada (Admin): Retorna los contadores de la barra superior del Dashboard.
+    - Total de Torneos registrados
+    - Torneos actualmente 'en_curso'
+    - Total de Equipos globales registrados
+    """
+    total_torneos = db.query(func.count(Torneo.id)).scalar() or 0
+    torneos_en_curso = db.query(func.count(Torneo.id)).filter(
+        Torneo.estado == 'en_curso').scalar() or 0
+    total_equipos = db.query(func.count(Equipo.id)).scalar() or 0
+
+    return {
+        "total_torneos": total_torneos,
+        "torneos_en_curso": torneos_en_curso,
+        "total_equipos": total_equipos
+    }
