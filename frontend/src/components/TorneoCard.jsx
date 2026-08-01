@@ -1,14 +1,15 @@
 import {useNavigate} from 'react-router-dom';
 import styles from './TorneoCard.module.css';
-import { Calendar, Check, ChevronRight, Clock, MapPin, Play, Users } from 'lucide-react';
-export const TorneoCard=({torneo})=>{
-    const navigate=useNavigate();
+import { Calendar, Check, CheckCircle2, ChevronRight, Clock, MapPin, Play, Users } from 'lucide-react';
+export const TorneoCard=({torneo,numEquipos,variant})=>{
+    const navegacion=useNavigate();
 
     const formatearFecha=(fechaStr)=>{
         if (!fechaStr) return "";
         const [year, month, day] = fechaStr.split("-");
         return `${day}/${month}/${year}`;
     }
+
 
     return (
       <div
@@ -37,7 +38,7 @@ export const TorneoCard=({torneo})=>{
           )}
           {torneo.estado === "finalizado" && (
             <span className={`${styles.badge} ${styles.badgefinalizado}`}>
-              <Check size={12}></Check> Finalizado
+              <CheckCircle2 size={12}></CheckCircle2> Finalizado
             </span>
           )}
         </div>
@@ -60,7 +61,7 @@ export const TorneoCard=({torneo})=>{
           </div>
           <div className={styles.detailItem}>
             <Users size={15} className={styles.icon} />
-            <span>{torneo.total_equipos || 0} equipos</span>
+            <span>{numEquipos} equipos</span>
           </div>
         </div>
         {/* Campeón */}
@@ -77,9 +78,9 @@ export const TorneoCard=({torneo})=>{
         <div className={styles.cardFooter}>
           <button
             className={styles.adminLink}
-            onClick={() => navigate(`/admin/torneo/${torneo.id}`)}
+            onClick={() => navegacion(variant==='admin' ? `/admin/torneo/${torneo.id}` : `/public/torneo/${torneo.id}` )}
           >
-            <span>Administrar</span> <ChevronRight size={16} />
+            <span>{variant==='admin' ? 'Administrar' : 'Ver torneo'}</span> <ChevronRight size={16} />
           </button>
         </div>
       </div>

@@ -8,7 +8,7 @@ from models.equipo import Equipo
 from datetime import datetime,timezone
 from services.calendario import generar_calendario_round_robin
 from sqlalchemy import func
-
+from models.torneoequipo import TorneoEquipo
 torneos_router=APIRouter(prefix='/api/torneos',tags=['Torneos'])
 
 #PIDE TOKEN
@@ -132,10 +132,12 @@ def obtener_resumen_dashboard(
     total_torneos = db.query(func.count(Torneo.id)).scalar() or 0
     torneos_en_curso = db.query(func.count(Torneo.id)).filter(
         Torneo.estado == 'en_curso').scalar() or 0
-    total_equipos = db.query(func.count(Equipo.id)).scalar() or 0
+    #Cuenta cada equipo una sola vez, aunque esté en varios torneos.
+    total_equipos_unicos = db.query(func.count(
+        func.distinct(TorneoEquipo.equipo_id))).scalar() or 0
 
     return {
         "total_torneos": total_torneos,
         "torneos_en_curso": torneos_en_curso,
-        "total_equipos": total_equipos
+        "total_equipos": total_equipos_unicos
     }

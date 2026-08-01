@@ -12,7 +12,7 @@ from functools import cmp_to_key
 posiciones_router=APIRouter(prefix='/api/torneos',tags=['Tabla de posiciones'])
 
 #Necesita el id del torneo
-posiciones_router.get('/{id}/posiciones',response_model=list[PosicionEquipoOutSchema])
+@posiciones_router.get('/{id}/posiciones',response_model=list[PosicionEquipoOutSchema])
 def obtener_tabla_posiciones(id:int,db:Session=Depends(get_db)):
     """
     Ruta Pública: Calcula en tiempo real la tabla de posiciones con

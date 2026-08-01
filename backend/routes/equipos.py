@@ -47,7 +47,7 @@ def inscribir_equipo_en_torneo(id:int,datos:CrearEquipoSchema,usuario_actual:dic
     return equipo
 
 #Listar equipos de un torneo
-@equipos_router.get('/api/torneos/{id}/equipos')
+@equipos_router.get('/api/torneos/{id}/equipos',response_model=list[EquipoOutSchema])
 def listar_equipos_de_torneo(id:int,db:Session=Depends(get_db)):
     """
     Ruta Pública: Retorna la lista de equipos inscritos en un torneo.
@@ -147,3 +147,12 @@ def obtener_palmares_equipo(id:int,db:Session=Depends(get_db)):
         total_titulos=len(lista_torneos),
         torneos_ganados=lista_torneos
     )
+    
+# Listar todos los equipos globales
+@equipos_router.get('/api/equipos', response_model=list[EquipoOutSchema])
+def listar_todos_los_equipos(db: Session = Depends(get_db)):
+    """
+    Ruta Pública: Retorna la lista de todos los equipos registrados globalmente.
+    """
+    equipos = db.query(Equipo).all()
+    return equipos

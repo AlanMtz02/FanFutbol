@@ -1,11 +1,15 @@
 .navbar {
   background-color: #0d4722;
-  height: 64px;
+  height: 74px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
   color: #ffffff;
+  box-shadow: 
+    0 4px 80px rgba(0, 0, 0, 0.2),   /* sombra principal */
+    0 2px 80px rgba(0, 0, 0, 0.15);  /* sombra secundaria */
+
 }
 
 .logoSection {
@@ -31,13 +35,14 @@
 }
 
 .subTitle {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #86efac;
 }
 
 .actionsSection {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 16px;
 }
 
@@ -104,3 +109,122 @@
   color: #ef4444;
   background-color: rgba(255, 255, 255, 0.1);
 }
+
+.btnAdminPublic{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: none;
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.4 ease;
+
+}
+
+.btnAdminPublic:hover{
+  background-color: #1d4ed8; /* Azul intenso */
+  color: #ffffff;           /* Texto blanco */
+}
+
+.torneoTitle{
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.badgeEstadoNav{
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 16px;
+  margin-right: 8px;
+  padding: 4px 14px;
+  font-size: 0.7rem;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.badgeEstadoNav.registro{
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badgeEstadoNav.enCurso{
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.badgeEstadoNav.finalizado{
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.backAdminDashboardBtn {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.backAdminDashboardBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+}
+
+.subTitleActions{
+  font-size: 0.9rem;
+  color: #86efac;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.tabsNav{
+  background-color: #ffffff;
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid #c2c2c2;
+  padding: 4px 10px;
+}
+
+.tabBtn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background:transparent;
+  color: #8b8b8b;
+  border: none;                /*elimina cualquier borde por defecto */
+  border-bottom: 3px solid transparent; /* invisible por defecto */
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  padding: 10px 16px;
+  cursor: pointer;
+
+}
+
+.tabBtn:hover {
+  border-bottom: 1.5px solid #454545; /* leve overlay */
+  color: #454545; /* texto blanco al hover */
+}
+
+.activeTab {
+  color: #39915B; /* verde texto activo */
+  border-bottom: 3px solid #39915B; /* subrayado verde activo */
+}
+
+

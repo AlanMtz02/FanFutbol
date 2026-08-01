@@ -1,0 +1,208 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headerLeft{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+
+.subTitle {
+  color: #8b8b8b;
+  font-size: 0.875rem;
+}
+
+.btnAgregarEquipo {
+  border: none;
+  background-color: #16a34a;
+  padding: 12px 20px;
+  font-weight: 700;
+  color: #ffffff;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.btnAgregarEquipo:hover {
+  background-color: #11813a;
+}
+
+.containerSinEquipos {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  min-height: 300px;
+  color: #8b8b8b;
+  border: 1px solid #c2c2c2;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.selectWrapper{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.selectWrapper select {
+  padding: 4px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 0.95rem;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.selectWrapper select:hover {
+  border-color: #007bff;
+}
+
+.selectWrapper select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.selectWrapper option {
+  padding: 8px;
+}
+
+.inscribirSelect{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: #007bff;
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+  border-radius: 16px;
+  padding: 4px 16px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.inscribirSelect:hover{
+  background-color: #0069d9; /* un poco más oscuro */
+  transform: translateY(-2px); /* pequeño efecto de elevación */
+}
+
+.infoSinEquipos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.infoSinEquipos h4 {
+  font-weight: 700;
+}
+
+.errorBox {
+  margin-top: 4px;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.gridEquipos{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.cardEquipo{
+  margin-top: 20px;
+  width: 360px;
+  height: 120px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+            0 8px 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+.infoEquipo{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.containerImgEquipo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;                /* ocupa todo el ancho */
+  height: 90px;              /* ejemplo de altura fija */
+  overflow: hidden;           /* evita que la imagen se desborde */
+  background-color: #f5f5f5;  /* opcional */
+  border-radius: 16px;
+}
+
+.imgEquipo{
+  width: 100%;                /* se adapta al ancho del div */
+  height: 100%;               /* se adapta a la altura */
+  object-fit: cover;          /* recorta manteniendo proporción */
+  border-radius: 8px;
+
+}
+
+.nombreEquipo{
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1d1d1d;
+}
+
+.actionsEquipo{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.btnEditar,.btnEliminar{
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: #8b8b8b;
+  cursor: pointer;
+  padding: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.btnEditar:hover{
+  background: rgba(0, 123, 255, 0.15); /* azul suave translúcido */
+  color: #007bff;                      /* azul principal */
+}
+
+.btnEliminar:hover{
+  background: rgba(220, 53, 69, 0.15); /* rojo suave translúcido */
+  color: #dc3545;                      /* rojo principal */
+
+}

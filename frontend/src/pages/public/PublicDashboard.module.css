@@ -1,0 +1,38 @@
+.pageWrapper{
+    min-height: 100vh;
+    background-color: #f0fdf4;
+}
+
+.contentContainer{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 42px;
+}
+
+
+/*Header Mis torneos*/
+.sectionHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.sectionTitle{
+    font-size: 1.5rem;
+    color: #111827;
+    font-weight: 800;
+}
+
+.sectionSubtitle{
+    font-size: 0.875rem;
+    color:#6b7280
+
+}
+
+/* Grid de Tarjetas */
+.torneosGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}

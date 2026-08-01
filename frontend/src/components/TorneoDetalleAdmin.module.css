@@ -1,0 +1,10 @@
+.page{
+    background-color: #f0fdf4;
+    min-height: 100vh;
+}
+
+.sectionAdminPage{
+    min-height: 100vh;
+    background-color: #f0fdf4;
+    padding: 30px 16px;
+}

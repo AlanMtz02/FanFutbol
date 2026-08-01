@@ -1,6 +1,6 @@
 from sqlalchemy import Integer,Column,String,ForeignKey,DateTime,Text
 from config.db import Base
-
+from sqlalchemy.orm import relationship
 class Partido(Base):
     __tablename__='partidos'
     
@@ -18,3 +18,9 @@ class Partido(Base):
     equipo_local_id=Column(Integer,ForeignKey('equipos.id'),nullable=False)#FK
     equipo_visita_id=Column(Integer,ForeignKey('equipos.id'),nullable=True)#Null si descansa un equipo porque la cantidad de equipos es impar
     
+    # Relación inversa explícita
+    jornada = relationship("Jornada", back_populates="partidos")
+    
+    # relaciones explícitas
+    equipo_local = relationship("Equipo", foreign_keys=[equipo_local_id])
+    equipo_visita = relationship("Equipo", foreign_keys=[equipo_visita_id])

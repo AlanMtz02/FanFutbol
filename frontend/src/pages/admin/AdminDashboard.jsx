@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { obtenerResumenDashboard, obtenerTorneos } from "../../services/servicioTorneo";
+import { obtenerEquiposDelTorneo, obtenerResumenDashboard, obtenerTorneos } from "../../services/servicioTorneo";
 import styles from './AdminDashboard.module.css';
 import { useAutenticacion } from "../../hooks/useAutenticacion";
 import { Navbar } from "../../components/Navbar";
@@ -9,45 +9,57 @@ import { CreateTorneoModal } from "../../components/CreateTorneoModal";
 
 export const AdminDashboard=()=>{
   //Cargar variables de contexto
-  const {usuario}=useAutenticacion();
+  const { usuario, cerrarSesionUsuario } = useAutenticacion();
 
   const [resumen, setResumen] = useState({
     total_torneos: 0,
     torneos_en_curso: 0,
     total_equipos: 0,
   });
+  const [equiposPorTorneo, setEquiposPorTorneo] = useState({}); // {torneoId: numEquipos}
   const [torneos, setTorneos] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [numEquipos, setNumEquipos] = useState([]);
 
-  const cargarDatos=async ()=>{
-    try{
+  const cargarDatos = async () => {
+    try {
       setLoading(true);
-      const [resumenData,torneosData]=await Promise.all([
+      const [resumenData, torneosData] = await Promise.all([
         obtenerResumenDashboard(),
-        obtenerTorneos()
+        obtenerTorneos(),
       ]);
       //Actualizar estados
       setResumen(resumenData);
       setTorneos(torneosData);
+      setNumEquipos(torneos.length);
 
+      // obtener equipos de cada torneo
+      const equiposCounts = {};
+      for (const torneo of torneosData) {
+        const equipos = await obtenerEquiposDelTorneo(torneo.id);
+        equiposCounts[torneo.id] = equipos.length;
+      }
+      setEquiposPorTorneo(equiposCounts);
+    } catch (err) {
+      console.error("Error al cargar datos del dashboard: ", err.message);
+    } finally {
+      setLoading(false);
     }
-    catch(err){
-      console.error('Error al cargar datos del dashboard: ',err.message);
-    }
-    finally{
-      setLoading(false)
-    }
-  }
+  };
 
   //Se ejecuta siempre al montar el componente
-  useEffect(()=>{
+  useEffect(() => {
     cargarDatos();
-  },[])
+  }, []);
 
   return (
     <div className={styles.pageWrapper}>
-      <Navbar email={usuario.email}></Navbar>
+      <Navbar
+        usuario={usuario}
+        onCerrarSesion={cerrarSesionUsuario}
+        variant="admin"
+      ></Navbar>
       <main className={styles.contentContainer}>
         {/*Metricas superiores*/}
         <div className={styles.statsGrid}>
@@ -77,9 +89,14 @@ export const AdminDashboard=()=>{
         <div className={styles.sectionHeader}>
           <div>
             <h1 className={styles.sectionTitle}>Mis Torneos</h1>
-            <p className={styles.sectionSubtitle}>Gestiona y supervisa tus torneos</p>
+            <p className={styles.sectionSubtitle}>
+              Gestiona y supervisa tus torneos
+            </p>
           </div>
-          <button className={styles.createBtn} onClick={()=>setIsModalOpen(true)}>
+          <button
+            className={styles.createBtn}
+            onClick={() => setIsModalOpen(true)}
+          >
             <Plus size={18}></Plus>
             <span>Crear Torneo</span>
           </button>
@@ -89,19 +106,23 @@ export const AdminDashboard=()=>{
           <p>Cargando información...</p>
         ) : (
           <div className={styles.torneosGrid}>
-            {torneos.map((torneo)=>(
-              <TorneoCard key={torneo.id} torneo={torneo}></TorneoCard>
+            {torneos.map((torneo) => (
+              <TorneoCard
+              variant="admin"
+                key={torneo.id}
+                torneo={torneo}
+                numEquipos={equiposPorTorneo[torneo.id] || 0}
+              ></TorneoCard>
             ))}
           </div>
         )}
         {/*Modal */}
         <CreateTorneoModal
-        isOpen={isModalOpen}
-        onClose={()=>setIsModalOpen(false)}
-        onTorneoCreado={cargarDatos}></CreateTorneoModal>
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onTorneoCreado={cargarDatos}
+        ></CreateTorneoModal>
       </main>
     </div>
   );
-
-
 }

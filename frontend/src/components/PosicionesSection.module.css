@@ -1,0 +1,99 @@
+.title {
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+
+.subTitle {
+  color: #8b8b8b;
+  font-size: 0.875rem;
+}
+
+.posicionesWrapper {
+  margin-top: 20px;
+  overflow-x: auto;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background-color: #ffffff;
+  border: 1px solid #eaeaea;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+
+
+}
+
+.table thead{
+  background-color: #EFF7F2;
+  color: #4d7a5e;
+  text-align: center;
+  font-size: .875rem;
+  border-bottom: 1px solid #c2c2c2;
+
+}
+
+.table th{
+  padding: 16px;
+  font-weight: 600;
+}
+
+.headerPts{
+  font-weight: 800;
+  font-size: 1rem;
+  color: #15803d;
+}
+
+.table td {
+  padding: 16px;
+  text-align: center;
+}
+
+.rowEquipo{
+  border-bottom: 1px solid #c2c2c2;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  background-color: #ffffff;
+
+}
+
+.primerLugar{
+  background-color: #eafff1;
+}
+
+tr .textoIzq{
+  text-align: left;
+}
+
+.equipoCell {
+  display: flex;
+  align-items: center;
+  gap:6px
+}
+
+.escudo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.noResults {
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+  color: #666;
+}
+
+.pts {
+  font-weight: bold;
+  color: #2c7a2c; /* verde para resaltar puntos */
+  font-size: 1.325rem;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.error {
+  color: red;
+  font-weight: 500;
+}

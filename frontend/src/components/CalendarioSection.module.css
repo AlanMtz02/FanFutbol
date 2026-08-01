@@ -1,0 +1,147 @@
+.header{
+  margin-bottom: 20px;
+
+}
+
+.title {
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+
+.subTitle {
+  color: #8b8b8b;
+  font-size: 0.875rem;
+}
+
+
+.containerEnRegistro {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  min-height: 300px;
+  color: #8b8b8b;
+  border: 1px solid #c2c2c2;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.jornadaCard {
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.jornadaHeader {
+  background-color: #f3f7f4; /* Fondo verde muy claro del header */
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.infoJornada {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.infoJornada h4 {
+  font-weight: 700;
+  color: #111827;
+}
+
+.faseBadge {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.statusJornada {
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+.partidoRow {
+  display: grid;
+  /* Estado | Local | Marcador | Visitante | Acciones */
+  grid-template-columns: 30px 1fr auto 1fr 240px;
+  align-items: center;
+  padding: 14px 20px;
+  border-top: 1px solid #f3f4f6;
+  gap: 16px;
+}
+
+.badgeFinalizado {
+  width: 8px;
+  height: 8px;
+  background-color: #22c55e; /* Punto verde */
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.badgePendiente {
+  width: 8px;
+  height: 8px;
+  background-color: #d1d5db;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.equipoLocal {
+  text-align: right;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.marcador {
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  text-align: center;
+  min-width: 60px;
+}
+
+.equipoVisita {
+  text-align: left;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.actionsCol {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #6b7280;
+  font-size: 0.8rem;
+}
+
+.infoPartido{
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btnEditar {
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: #8b8b8b;
+  cursor: pointer;
+  padding: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.btnEditar:hover {
+  background: rgba(0, 123, 255, 0.15); /* azul suave translúcido */
+  color: #007bff;                      /* azul principal */
+}

@@ -101,7 +101,7 @@ const PaginaLogin = () => {
           <button
             type="button"
             className={styles.btnInvitado}
-            onClick={() => navigate("/torneos")}
+            onClick={() => navigate("/")}
           >
             <Eye size={16} />
             <span>Ver torneos sin iniciar sesión</span>
