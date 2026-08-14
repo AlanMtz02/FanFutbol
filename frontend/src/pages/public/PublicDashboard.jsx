@@ -12,6 +12,29 @@ export const PublicDashboard = () => {
   const [torneos, setTorneos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [numEquipos, setNumEquipos] = useState([]);
+  const [activeTab,setActiveTab]=useState('todos');
+
+  //Variable y ala vez funcion para poder obtener los torneos por su estado
+  const torneosFiltrados=torneos.filter((torneo) => {
+    //Si la pestaña activa es todos, traer todos los torneos
+    if (activeTab === "todos") {
+      return true;
+    }
+    //Regresar cada torneo donde el estado sea en en_curso
+    if (activeTab === "en_curso") {
+      return torneo.estado === "en_curso";
+    }
+
+    if (activeTab === "registro") {
+      return torneo.estado === "registro";
+    }
+
+    if (activeTab === "finalizado") {
+      return torneo.estado === "finalizado";
+    }
+  })
+    
+  
 
   const cargarDatos = async () => {
     try {
@@ -51,17 +74,44 @@ export const PublicDashboard = () => {
               <p className={styles.sectionSubtitle}>
                 Consulta el calendario, resultados y posiciones de cada torneo.
               </p>
+              <div className={styles.contenedorTabs}>
+                <button
+                  className={`${styles.tab} ${activeTab === "todos" ? styles.activeTab : ""}`}
+                  onClick={() => setActiveTab("todos")}
+                >
+                  Todos
+                </button>
+                <button
+                  className={`${styles.tab} ${activeTab === "en_curso" ? styles.activeTab : ""}`}
+                  onClick={() => setActiveTab("en_curso")}
+                >
+                  En curso
+                </button>
+                <button
+                  className={`${styles.tab} ${activeTab === "registro" ? styles.activeTab : ""}`}
+                  onClick={() => setActiveTab("registro")}
+                >
+                  Registro
+                </button>
+                <button
+                  className={`${styles.tab} ${activeTab === "finalizado" ? styles.activeTab : ""}`}
+                  onClick={() => setActiveTab("finalizado")}
+                >
+                  Finalizado
+                </button>
+              </div>
             </div>
           </div>
           {loading ? (
             <p>Cargando información...</p>
-          ) : torneos.length === 0 ? (
+          ) : torneosFiltrados.length === 0 ? (
             <div className={styles.sinTorneos}>
               <p>No hay torneos disponibles. Consulta proximamente.</p>
             </div>
           ) : (
+            /*ITERO SOBRE LOS TORNEOS FILTRADOS */
             <div className={styles.torneosGrid}>
-              {torneos.map((torneo) => (
+              {torneosFiltrados.map((torneo) => (
                 <TorneoCard
                   variant="public"
                   key={torneo.id}

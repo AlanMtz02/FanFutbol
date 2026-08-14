@@ -1,6 +1,6 @@
 import styles from "./PosicionesSection.module.css";
 import {Trophy} from 'lucide-react';
-export const PosicionesSection = ({ torneo, variant, error, posiciones }) => {
+export const PosicionesSection = ({ torneo, variant, error, posiciones,equiposDelTorneo }) => {
   return (
     <>
       <div className={styles.header}>
@@ -38,12 +38,12 @@ export const PosicionesSection = ({ torneo, variant, error, posiciones }) => {
               posiciones.map((eq) => (
                 <tr
                   key={eq.equipo_id}
-                  className={`${styles.rowEquipo} ${eq.posicion === 1 ? styles.primerLugar : ""}`}
+                  className={`${styles.rowEquipo} ${torneo.equipo_campeon_id === eq.equipo_id ? styles.equipoCampeon : ""}`}
                   title={eq.posicion===1 && eq.desempate_directo_aplicado ? eq.detalle_desempate : eq.posicion === 1 ? 'Primer lugar' : ''}
                 >
                   <td>{eq.posicion}</td>
                   <td className={styles.equipoCell}>
-                    {eq.posicion === 1 && (
+                    {eq.equipo_id === torneo.equipo_campeon_id && (
                       <Trophy size={18} color="#eab308"></Trophy>
                     )}
                     <img

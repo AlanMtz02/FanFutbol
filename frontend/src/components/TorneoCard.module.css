@@ -65,7 +65,7 @@
 
 .badgeEnCurso { background: #dcfce7; color: #15803d; }
 .badgeRegistro { background: #dbeafe; color: #1d4ed8; }
-.badgeFinalizado { background: #f3f4f6; color: #4b5563; }
+.badgeFinalizado { background: #dee0e4; color: #4b5563; }
 
 .cardDetailGrid {
   display: grid;

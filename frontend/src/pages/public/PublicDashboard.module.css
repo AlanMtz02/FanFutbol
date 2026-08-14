@@ -36,3 +36,47 @@
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 20px;
 }
+
+.contenedorTabs{
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tab{
+  font-size: .875rem;
+  padding: 6px 24px;
+  border: none;
+  border-radius: 30px;/*30*/
+  color: #8b8b8b;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  transition: background 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+
+  
+}
+
+
+.tab:hover{
+  background: #e1e1e1;
+  color: #6b7280;
+
+}
+.activeTab{
+  border: none;
+  background: #22c55e;
+  font-weight: 600;
+  color: white;
+  border: 1px solid #d1d5db;
+  transition: background 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+
+
+}
+
+.activeTab:hover{
+  background: #188941;
+  color:#dbdada;
+}

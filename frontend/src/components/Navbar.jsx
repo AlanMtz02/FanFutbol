@@ -16,6 +16,8 @@ import {
   Trophy,
   Users,
 } from "lucide-react";
+import { useState } from "react";
+import { ModalFase } from "./ModalFase";
 
 export const Navbar = ({
   usuario,
@@ -25,10 +27,23 @@ export const Navbar = ({
   activeTab,
   onTabChange,
   onIniciarTorneo,
-  onFinalizarTorneo,
+  jornadasDelTorneo,
+  equiposDelTorneo,
+  onRefreshTorneo,
 }) => {
   const navegacion = useNavigate();
   const inicial = usuario?.email ? usuario.email.charAt(0).toUpperCase() : "AD";
+  const [modalFase,setModalFase]=useState(null);
+
+  const todasJornadasCompletas = (fase) => {
+    const jornadasFase = jornadasDelTorneo.filter((j) => j.tipo_fase === fase);
+    return jornadasFase.every((j) => {
+      const finalizados =
+        j.partidos?.filter((p) => p.estado === "finalizado").length || 0;
+      const total = j.partidos?.length || 0;
+      return finalizados === total;
+    });
+  };
   console.log(variant);
 
   return (
@@ -81,13 +96,9 @@ export const Navbar = ({
                   )}
                   {torneo.estado === "finalizado" && (
                     <>
-                      <button
-                        type="button"
-                        className={styles.backAdminDashboardBtn}
-                        /*TIENE QUE EJECUTAR EL ENDPOINT DE FINALIZAR */
-                      >
-                        <CheckCircle2 size={12}></CheckCircle2> Finalizado
-                      </button>
+                      
+                      <CheckCircle2 size={12}></CheckCircle2> Finalizado
+                     
                     </>
                   )}
                 </span>
@@ -182,20 +193,13 @@ export const Navbar = ({
                 {torneo.numero_canchas}{" "}
                 {torneo.numero_canchas >= 2 ? "canchas" : "cancha"}
               </span>
-              {/*FALTA EL ONCLICK DE LOS BOTONES PARA INICIAR TORNEO Y FINALIZARLO */}
-              {torneo.estado === "registro" ? (
+              {/*FALTA EL ONCLICK DE LOS BOTONES PARA INICIAR TORNEO */}
+              {torneo.estado === "registro" && (
                 <button
                   className={styles.btnAdminPublic}
                   onClick={onIniciarTorneo}
                 >
                   <Play size={18}></Play> Iniciar
-                </button>
-              ) : (
-                <button
-                  className={styles.btnAdminPublic}
-                  onClick={onFinalizarTorneo}
-                >
-                  <CheckCircle2Icon size={18}></CheckCircle2Icon> Finalizar
                 </button>
               )}
             </>
@@ -225,6 +229,7 @@ export const Navbar = ({
           </button>
         </nav>
       )}
+      
     </>
   );
 };

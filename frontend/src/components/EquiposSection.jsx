@@ -110,34 +110,6 @@ export const EquiposSection = ({
                 : "El torneo aun esta en registro. Regresa mas tarde."}
             </span>
           </div>
-
-          {equiposGlobales.length > 0 && variant === "admin" && (
-            <>
-              <div className={styles.selectWrapper}>
-                <label>Selecciona un equipo:</label>
-                <select
-                  value={equipoSeleccionado}
-                  onChange={(e) => setEquipoSeleccionado(e.target.value)}
-                >
-                  <option value="">-- Selecciona --</option>
-                  {equiposGlobales.map((eq) => (
-                    <option key={eq.id} value={eq.id}>
-                      {eq.nombre}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              {equipoSeleccionado && (
-                <button
-                  type="button"
-                  className={styles.inscribirSelect}
-                  onClick={inscribirEquipoEnTorneo}
-                >
-                  <CheckCircle2></CheckCircle2> Inscribir equipo
-                </button>
-              )}
-            </>
-          )}
         </div>
       ) : (
         <div className={styles.gridEquipos}>

@@ -81,19 +81,6 @@ export const TorneoDetalleAdmin = () => {
         console.error(error.message)
     }
   }
-
-  const handleFinalizarTorneo=async(equipoCampeonId)=>{
-    setError(null);
-    try{
-      await finalizarTorneo(id, equipoCampeonId);
-      cargarTorneo(); // Pasa a 'finalizado' y asigna equipo_campeon_id
-    }
-    catch(error){
-      setError(error.message || 'No se pudo finalizar el torneo. Intenta de nuevo.')
-      console.error(error.message);
-    }
-  }
-
   const handleAgregarEquipo=async(nuevoEquipo)=>{
     setError(null);
     try{
@@ -150,16 +137,16 @@ export const TorneoDetalleAdmin = () => {
 
   return (
     <div className={styles.page}>
-      <Navbar variant="admin" torneo={torneo} activeTab={activeTab} onTabChange={setActiveTab} onIniciarTorneo={handleIniciarTorneo} onFinalizarTorneo={handleFinalizarTorneo}></Navbar>
+      <Navbar variant="admin" torneo={torneo} activeTab={activeTab} onTabChange={setActiveTab} onIniciarTorneo={handleIniciarTorneo} jornadasDelTorneo={jornadasDelTorneo} equiposDelTorneo={equiposDelTorneo} onRefreshTorneo={cargarTorneo}></Navbar>
       <section className={styles.sectionAdminPage}>
         {activeTab==='equipos' && (
           <EquiposSection torneo={torneo} variant='admin' error={error} numEquiposDelTorneo={numEquiposDelTorneo} onRefreshEquipos={cargarTorneo} equiposDelTorneo={equiposDelTorneo} onErrorChange={setError} equiposGlobales={equiposGlobales} onEditarEquipo={handleEditarEquipo} onEliminarEquipo={handleEliminarEquipo}></EquiposSection>
         )}
         {activeTab==='calendario' && (
-          <CalendarioSection torneo={torneo} variant='admin' error={error} jornadasDelTorneo={jornadasDelTorneo} onRefreshTorneo={cargarTorneo}></CalendarioSection>
+          <CalendarioSection torneo={torneo} variant='admin' error={error} jornadasDelTorneo={jornadasDelTorneo} onRefreshTorneo={cargarTorneo} equiposDelTorneo={equiposDelTorneo}></CalendarioSection>
         )}
         {activeTab==='posiciones' && (
-          <PosicionesSection torneo={torneo} variant='admin' error={error} posiciones={posiciones}></PosicionesSection>
+          <PosicionesSection torneo={torneo} variant='admin' error={error} posiciones={posiciones} ></PosicionesSection>
         )}
       </section>
     </div>

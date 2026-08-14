@@ -1,6 +1,6 @@
 import {useNavigate} from 'react-router-dom';
 import styles from './TorneoCard.module.css';
-import { Calendar, Check, CheckCircle2, ChevronRight, Clock, MapPin, Play, Users } from 'lucide-react';
+import { Calendar, Check, CheckCircle2, ChevronRight, Clock, MapPin, Play, Trophy, Users } from 'lucide-react';
 export const TorneoCard=({torneo,numEquipos,variant})=>{
     const navegacion=useNavigate();
 
@@ -37,7 +37,7 @@ export const TorneoCard=({torneo,numEquipos,variant})=>{
             </span>
           )}
           {torneo.estado === "finalizado" && (
-            <span className={`${styles.badge} ${styles.badgefinalizado}`}>
+            <span className={`${styles.badge} ${styles.badgeFinalizado}`}>
               <CheckCircle2 size={12}></CheckCircle2> Finalizado
             </span>
           )}

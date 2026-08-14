@@ -1,5 +1,7 @@
 .header{
-  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
 }
 
@@ -68,11 +70,26 @@
 .partidoRow {
   display: grid;
   /* Estado | Local | Marcador | Visitante | Acciones */
-  grid-template-columns: 30px 1fr auto 1fr 240px;
+  grid-template-columns: 120px 1fr auto 1fr 240px;
   align-items: center;
   padding: 14px 20px;
   border-top: 1px solid #f3f4f6;
   gap: 16px;
+}
+
+.statusCol{
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.ganadorPenales{
+  color: #8b8b8b;
+  font-size: .650rem;
+  font-style: italic;
+  margin-left: 30px;
+  position: absolute;
+  
 }
 
 .badgeFinalizado {
@@ -144,4 +161,73 @@
 .btnEditar:hover {
   background: rgba(0, 123, 255, 0.15); /* azul suave translúcido */
   color: #007bff;                      /* azul principal */
+}
+
+.containerTabs{
+  margin-top: 6px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.tab{
+  font-size: .875rem;
+  padding: 6px 24px;
+  border: none;
+  border-radius: 30px;
+  color: #8b8b8b;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  transition: background 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+
+  
+}
+
+.tab:hover{
+  background: #e1e1e1;
+  color: #6b7280;
+
+}
+.activeTab{
+  border: none;
+  background: #22c55e;
+  font-weight: 600;
+  font-size: .875rem;
+  padding: 6px 24px;
+  border-radius: 30px;
+  color: white;
+  border: 1px solid #d1d5db;
+  transition: background 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+
+
+}
+
+.activeTab:hover{
+  background: #188941;
+  color:#dbdada;
+}
+
+.btnFase{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .975rem;
+  border: none;
+  background: #007bff;
+  font-weight: 700;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 20px;
+  transition: background 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+
+
+}
+
+.btnFase:hover{
+  background: #0065d0; /* azul suave translúcido */
+  color: #ffffff;                      /* azul principal */
 }

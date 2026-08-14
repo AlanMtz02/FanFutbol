@@ -37,3 +37,16 @@ class ResumenDashboardOutSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+# Para cuartos
+class HoraCuartosSchema(BaseModel):
+    hora_inicio_cuartos: time
+
+# Para semifinales
+class HoraSemisSchema(BaseModel):
+    hora_inicio_semis: time
+
+# Para final
+class HoraFinalSchema(BaseModel):
+    hora_inicio_final: time
+    

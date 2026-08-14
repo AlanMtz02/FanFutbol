@@ -1,12 +1,12 @@
 from fastapi import APIRouter,HTTPException,Depends
 from config.db import get_db
 from sqlalchemy.orm import Session
-from schemas.torneo import CrearTorneoSchema,TorneoFinalizarSchema,TorneoOutSchema,ResumenDashboardOutSchema
+from schemas.torneo import CrearTorneoSchema,TorneoFinalizarSchema,TorneoOutSchema,ResumenDashboardOutSchema,HoraCuartosSchema,HoraFinalSchema,HoraSemisSchema
 from utils.seguridad import obtener_usuario_actual
 from models.torneo import Torneo
 from models.equipo import Equipo
 from datetime import datetime,timezone
-from services.calendario import generar_calendario_round_robin
+from services.calendario import generar_calendario_round_robin,generar_cuartos,generar_final,generar_semis
 from sqlalchemy import func
 from models.torneoequipo import TorneoEquipo
 torneos_router=APIRouter(prefix='/api/torneos',tags=['Torneos'])
@@ -141,3 +141,41 @@ def obtener_resumen_dashboard(
         "torneos_en_curso": torneos_en_curso,
         "total_equipos": total_equipos_unicos
     }
+    
+#Requiere token y torneo ID 
+@torneos_router.post('/{id}/pasar-cuartos')
+def pasar_a_cuartos(
+    id: int,
+    datos: HoraCuartosSchema,
+    usuario_actual: dict = Depends(obtener_usuario_actual),
+    db: Session = Depends(get_db)
+):
+    """
+    Cambia torneo a fase 'cuartos' y genera jornada de cuartos con partidos.
+    """
+    return generar_cuartos(id, datos, db)
+
+@torneos_router.post('/{id}/pasar-semis')
+def pasar_a_semis(
+    id:int,
+    datos:HoraSemisSchema,
+    usuario_actual:dict=Depends(obtener_usuario_actual),
+    db:Session=Depends(get_db)
+):
+    """
+    Cambia torneo a fase 'semifinal' y genera jornada de semis con ganadores de cuartos.
+    """
+    return generar_semis(id, datos, db)
+
+
+@torneos_router.post('/{id}/pasar-final')
+def pasar_a_final(
+    id: int,
+    datos: HoraFinalSchema,
+    usuario_actual: dict = Depends(obtener_usuario_actual),
+    db: Session = Depends(get_db)
+):
+    """
+    Cambia torneo a fase 'final' y genera jornada de la final con ganadores de semis.
+    """
+    return generar_final(id, datos, db)
