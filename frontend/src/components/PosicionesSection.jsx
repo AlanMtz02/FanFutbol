@@ -1,72 +1,88 @@
+import { useEffect, useState } from "react";
 import styles from "./PosicionesSection.module.css";
-import {Trophy} from 'lucide-react';
-export const PosicionesSection = ({ torneo, variant, error, posiciones,equiposDelTorneo }) => {
+import { obtenerPosicionesDelTorneo } from "../services/servicioTorneo";
+import { TablaDePosiciones } from "./TablaDePosiciones";
+import { Bracket } from "./Bracket";
+
+export const PosicionesSection = ({ torneo }) => {
+  const [posiciones, setPosiciones] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [errorLocal, setErrorLocal] = useState(null);
+  const [subTab, setSubTab] = useState("tabla"); // "tabla" | "liguilla"
+
+  // Condición: Si el torneo no está en fase regular (ej. está en cuartos, semis o final),
+  // se permite ver la pestaña de la Liguilla / Bracket
+  const esLiguilla = torneo?.fase_actual !== "regular";
+
+  const cargarPosiciones = async () => {
+    if (!torneo?.id) return; //Si no hay torneo, sale de la funcion
+    try {
+      setCargando(true);
+      setErrorLocal(null);
+      const data = await obtenerPosicionesDelTorneo(torneo.id);
+      setPosiciones(data || []);
+    } catch (err) {
+      console.error("Error al cargar posiciones:", err);
+      setErrorLocal(err.message || "Error al obtener la tabla de posiciones.");
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  //Se ejcuta siempre mientras exista un torneo
+  useEffect(() => {
+    cargarPosiciones();
+  }, [torneo?.id]);
+
+  if (cargando) {
+    return <div style={{ padding: "2rem" }}>Cargando posiciones...</div>;
+  }
+
   return (
     <>
       <div className={styles.header}>
-        <h3 className={styles.title}>Tabla de posiciones</h3>
+        <h3 className={styles.title}>
+          {subTab === "tabla" ? "Tabla de posiciones" : "Fase final / Liguilla"}
+        </h3>
         <span className={styles.subTitle}>
-          Actualizada en tiempo real con los resultados ingresados
+          {subTab === "tabla"
+            ? "Actualizada en tiempo real con los resultados ingresados."
+            : "Árbol de eliminatorias."}
         </span>
       </div>
-      <div className={styles.posicionesWrapper}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th className={styles.textoIzq}>Equipo</th>
-              <th>PJ</th>
-              <th>PG</th>
-              <th>PE</th>
-              <th>PP</th>
-              <th>GF</th>
-              <th>GC</th>
-              <th>DG</th>
-              <th className={styles.headerPts}>PTS</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* Caso torneo en registro o sin resultados */}
-            {torneo.estado === "registro" || posiciones.length === 0 ? (
-              <tr>
-                <td colSpan="10" className={styles.noResults}>
-                  Sin resultados aún. Ingresa resultados en la pestaña
-                  Calendario.
-                </td>
-              </tr>
-            ) : (
-              posiciones.map((eq) => (
-                <tr
-                  key={eq.equipo_id}
-                  className={`${styles.rowEquipo} ${torneo.equipo_campeon_id === eq.equipo_id ? styles.equipoCampeon : ""}`}
-                  title={eq.posicion===1 && eq.desempate_directo_aplicado ? eq.detalle_desempate : eq.posicion === 1 ? 'Primer lugar' : ''}
-                >
-                  <td>{eq.posicion}</td>
-                  <td className={styles.equipoCell}>
-                    {eq.equipo_id === torneo.equipo_campeon_id && (
-                      <Trophy size={18} color="#eab308"></Trophy>
-                    )}
-                    <img
-                      src={eq.escudo_url}
-                      alt={eq.nombre_equipo}
-                      className={styles.escudo}
-                    />
-                    {eq.nombre_equipo}
-                  </td>
-                  <td>{eq.pj}</td>
-                  <td>{eq.pg}</td>
-                  <td>{eq.pe}</td>
-                  <td>{eq.pp}</td>
-                  <td>{eq.gf}</td>
-                  <td>{eq.gc}</td>
-                  <td>{eq.dg}</td>
-                  <td className={styles.pts}>{eq.pts}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      {/* Sub-Tabs: Solo se muestran si el torneo ya avanzó a Liguilla */}
+      {esLiguilla && (
+        <div className={styles.subTabsContainer}>
+          <button
+            type="button"
+            className={`${styles.subTabBtn} ${subTab === "tabla" ? styles.subTabActive : ""}`}
+            onClick={() => setSubTab("tabla")}
+          >
+            Tabla general
+          </button>
+          <button
+            type="button"
+            className={`${styles.subTabBtn} ${
+              subTab === "liguilla" ? styles.subTabActive : ""
+            }`}
+            onClick={() => setSubTab("liguilla")}
+          >
+            Liguilla (Bracket)
+          </button>
+        </div>
+      )}
+      {errorLocal ? (
+        <>
+          <div className={styles.errorBox}>{errorLocal}</div>
+        </>
+      ) : subTab === "tabla" ? (
+        <TablaDePosiciones
+          torneo={torneo}
+          posiciones={posiciones}
+        ></TablaDePosiciones>
+      ) : (
+        <Bracket torneo={torneo}></Bracket>
+      )}
     </>
-  );
+  )
 };

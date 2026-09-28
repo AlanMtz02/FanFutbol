@@ -1,52 +1,114 @@
+import { useEffect, useState } from "react";
 import { CheckCircle2, Edit2, Plus, Shield, Trash2 } from "lucide-react";
 import styles from "./EquiposSection.module.css";
-import { useState } from "react";
 import { CreateEquipoModal } from "./CreateEquipoModal";
-import { agregarEquipo } from "../services/servicioTorneo";
+import {
+  agregarEquipo,
+  eliminarEquipo,
+  obtenerEquiposDelTorneo,
+  obtenerEquiposGlobales,
+} from "../services/servicioTorneo";
 
-export const EquiposSection = ({
-  torneo,
-  variant,
-  error,
-  numEquiposDelTorneo,
-  onRefreshEquipos,
-  equiposDelTorneo,
-  equiposGlobales,
-  onEditarEquipo,
-  onEliminarEquipo,
-}) => {
+export const EquiposSection = ({ torneo, variant }) => {
+  // 1. ESTADOS LOCALES DE DATOS
+  const [equiposDelTorneo, setEquiposDelTorneo] = useState([]);
+  const [equiposGlobales, setEquiposGlobales] = useState([]);
+  const [cargando, setCargando] = useState(true);
+
+  // 2. ESTADOS LOCALES DE INTERFAZ
   const [equipoSeleccionado, setEquipoSeleccionado] = useState("");
   const [mostrarModalEquipo, setMostrarModalEquipo] = useState(false);
   const [equipoEnEdicion, setEquipoEnEdicion] = useState(null);
+  const [errorLocal, setErrorLocal] = useState(null);
+  const [loadingAccion, setLoadingAccion] = useState(false);
 
-  //Filtrar equipos globales que no estén ya inscritos en el torneo
-  //Puede ser ID o  por Nombre
+  // 3. FUNCIÓN DE CARGA AUTÓNOMA DE EQUIPOS
+  const cargarEquipos = async () => {
+    try {
+      setCargando(true);
+      setErrorLocal(null);
+
+      // Si es admin, traemos también los globales para el select de inscripción
+      if (variant === "admin") {
+        const [torneoData, globalesData] = await Promise.all([
+          obtenerEquiposDelTorneo(torneo.id),
+          obtenerEquiposGlobales(),
+        ]);
+        setEquiposDelTorneo(torneoData);
+        setEquiposGlobales(globalesData);
+      } else {
+        const torneoData = await obtenerEquiposDelTorneo(torneo.id);
+        setEquiposDelTorneo(torneoData);
+      }
+    } catch (err) {
+      setErrorLocal(err.message || "Error al obtener la lista de equipos.");
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  useEffect(() => {
+    if (torneo?.id) {
+      cargarEquipos();
+    }
+  }, [torneo?.id]);
+
+  const numEquipos = equiposDelTorneo.length;
+
+  // Filtrar equipos globales que no estén ya inscritos en el torneo
   const equiposDisponibles = equiposGlobales.filter(
     (eqGlobal) =>
       !equiposDelTorneo.some((eqTorneo) => eqTorneo.nombre === eqGlobal.nombre),
   );
 
-  const inscribirEquipoEnTorneo = async () => {
+  // ACCIÓN 1: Inscribir equipo de la lista global
+  const handleInscribirEquipo = async () => {
     if (!equipoSeleccionado) return;
+    setErrorLocal(null);
+    setLoadingAccion(true);
+
     try {
-      // Buscar el equipo seleccionado en la lista global
+      //Encontrar al equipo que se quiere inscribir de los equipos globales
       const equipo = equiposGlobales.find(
         (eq) => eq.id === parseInt(equipoSeleccionado),
       );
+
       if (!equipo) return;
 
-      // Mandar nombre y escudo_url al endpoint
       await agregarEquipo(torneo.id, {
         nombre: equipo.nombre,
         escudo_url: equipo.escudo_url,
       });
 
-      onRefreshEquipos(); // refresca lista del torneo
-      setEquipoSeleccionado(""); // limpia selección
+      setEquipoSeleccionado("");
+      await cargarEquipos(); // Refresca únicamente esta sección
     } catch (err) {
-      console.error("Error al inscribir equipo:", err.message);
+      setErrorLocal(err.message || "No se pudo inscribir el equipo.");
+    } finally {
+      setLoadingAccion(false);
     }
   };
+
+  // ACCIÓN 2: Eliminar equipo del torneo
+  const handleEliminarEquipo = async (equipoId) => {
+    setErrorLocal(null);
+    const confirmar = window.confirm(
+      "¿Seguro que quieres eliminar este equipo del torneo?",
+    );
+
+    if (confirmar) {
+      try {
+        await eliminarEquipo(torneo.id, equipoId);
+        await cargarEquipos(); // Refresca únicamente esta sección
+      } catch (err) {
+        setErrorLocal(err.message || "No se pudo eliminar el equipo.");
+      }
+    }
+  };
+
+  if (cargando) {
+    return <div style={{ padding: "1.5rem" }}>Cargando equipos...</div>;
+  }
 
   return (
     <>
@@ -55,9 +117,12 @@ export const EquiposSection = ({
           <div>
             <h3 className={styles.title}>Equipos inscritos</h3>
             <span className={styles.subTitle}>
-              {numEquiposDelTorneo} equipos inscritos en este torneo
+              {numEquipos}{" "}
+              {numEquipos === 1 ? "equipo inscrito" : "equipos inscritos"} en
+              este torneo
             </span>
           </div>
+
           {equiposGlobales.length > 0 &&
             torneo.estado === "registro" &&
             variant === "admin" && (
@@ -66,6 +131,7 @@ export const EquiposSection = ({
                 <select
                   value={equipoSeleccionado}
                   onChange={(e) => setEquipoSeleccionado(e.target.value)}
+                  disabled={loadingAccion}
                 >
                   <option value="">-- Selecciona --</option>
                   {equiposDisponibles.map((eq) => (
@@ -74,40 +140,47 @@ export const EquiposSection = ({
                     </option>
                   ))}
                 </select>
+
                 {equipoSeleccionado && (
                   <button
                     type="button"
                     className={styles.inscribirSelect}
-                    onClick={inscribirEquipoEnTorneo}
+                    onClick={handleInscribirEquipo}
+                    disabled={loadingAccion}
                   >
-                    <CheckCircle2></CheckCircle2> Inscribir equipo
+                    <CheckCircle2 size={16} />
+                    {loadingAccion ? "Inscribiendo..." : "Inscribir equipo"}
                   </button>
                 )}
               </div>
             )}
         </div>
+
         {variant === "admin" && torneo.estado === "registro" && (
           <button
+            type="button"
             className={styles.btnAgregarEquipo}
             onClick={() => {
               setEquipoEnEdicion(null);
               setMostrarModalEquipo(true);
             }}
           >
-            <Plus size={20}></Plus> Agregar equipo
+            <Plus size={20} /> Agregar equipo
           </button>
         )}
       </div>
-      {error && <div className={styles.errorBox}>{error}</div>}
-      {numEquiposDelTorneo === 0 ? (
+
+      {errorLocal && <div className={styles.errorBox}>{errorLocal}</div>}
+
+      {numEquipos === 0 ? (
         <div className={styles.containerSinEquipos}>
           <div className={styles.infoSinEquipos}>
-            <Shield size={36}></Shield>
+            <Shield size={36} />
             <h4>Sin equipos inscritos</h4>
             <span>
               {variant === "admin"
-                ? "Agrega al menos dos equipos para generar el calendario."
-                : "El torneo aun esta en registro. Regresa mas tarde."}
+                ? "Agrega equipos para poder iniciar el torneo."
+                : "El torneo aún está en registro. Regresa más tarde."}
             </span>
           </div>
         </div>
@@ -125,6 +198,7 @@ export const EquiposSection = ({
                 </div>
                 <h3 className={styles.nombreEquipo}>{equipo.nombre}</h3>
               </div>
+
               <div className={styles.actionsEquipo}>
                 {variant === "admin" && (
                   <button
@@ -135,7 +209,7 @@ export const EquiposSection = ({
                       setMostrarModalEquipo(true);
                     }}
                   >
-                    <Edit2 size={20}></Edit2>
+                    <Edit2 size={20} />
                   </button>
                 )}
 
@@ -143,9 +217,9 @@ export const EquiposSection = ({
                   <button
                     type="button"
                     className={styles.btnEliminar}
-                    onClick={() => onEliminarEquipo(equipo.id)}
+                    onClick={() => handleEliminarEquipo(equipo.id)}
                   >
-                    <Trash2 size={20}></Trash2>
+                    <Trash2 size={20} />
                   </button>
                 )}
               </div>
@@ -153,20 +227,24 @@ export const EquiposSection = ({
           ))}
         </div>
       )}
-      {/*Falta lista de equipos */}
-      {variant === "admin" && (
+
+      {/* MODAL PARA CREAR O EDITAR CON VALIDACION DOBLE*/}
+      {variant === "admin" && mostrarModalEquipo && (
         <CreateEquipoModal
+          isOpen={mostrarModalEquipo}
           modo={equipoEnEdicion ? "editar" : "crear"}
-          onEditarEquipo={onEditarEquipo}
           equipoInicial={equipoEnEdicion}
-          onRefreshEquipos={onRefreshEquipos}
           torneo={torneo}
+          onSuccess={() => {
+            setMostrarModalEquipo(false);
+            setEquipoEnEdicion(null);
+            cargarEquipos();
+          }}
           onClose={() => {
             setMostrarModalEquipo(false);
             setEquipoEnEdicion(null);
           }}
-          isOpen={mostrarModalEquipo}
-        ></CreateEquipoModal>
+        />
       )}
     </>
   );

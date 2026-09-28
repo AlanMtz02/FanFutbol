@@ -8,9 +8,7 @@ export function ModalFinalizarTorneo({isOpen,onClose,equipos,onConfirmar}){
 
     const handleSubmit=(e)=>{
         e.preventDefault();
-        if(!equipoSeleccionado){
-            alert('Por favor selecciona el equipo campeón.')
-        }
+        
         onConfirmar(Number(equipoSeleccionado));//Llama al endpoint para finalizar torneo
         onClose();
 

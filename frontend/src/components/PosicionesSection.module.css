@@ -97,3 +97,54 @@ tr .textoIzq{
   color: red;
   font-weight: 500;
 }
+
+.errorBox {
+  margin-top: 12px;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.subTabsContainer{
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+}
+
+.subTabBtn{
+  font-size: .875rem;
+  padding: 6px 24px;
+  border: none;
+  border-radius: 30px;/*30*/
+  color: #8b8b8b;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  transition: background 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+}
+
+.subTabBtn:hover{
+  background: #e1e1e1;
+  color: #6b7280;
+}
+
+.subTabActive{
+  border: none;
+  background: #22c55e;
+  font-weight: 600;
+  color: white;
+  border: 1px solid #d1d5db;
+  transition: background 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+}
+
+.subTabActive:hover{
+  background: #188941;
+  color:#dbdada;
+}

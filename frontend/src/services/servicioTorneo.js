@@ -118,22 +118,22 @@ export async function finalizarTorneo(id, equipoCampeonId) {
   return datos;
 }
 
-export async function iniciarTorneo(id) {
+export async function iniciarTorneoLigaMx(id) {
   //Necesita token
   const token = localStorage.getItem("token");
   const respuesta = await fetch(
-    `${URL_BASE}/api/torneos/${id}/generar-calendario`,
+    `${URL_BASE}/api/torneos/${id}/generar-calendario-liga-mx`,
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        'Content-Type': "application/json",
+        'Authorization': `Bearer ${token}`,
       },
     },
   );
   const datos = await respuesta.json();
   if (!respuesta.ok) {
-    throw new Error(datos.detail || "Error al iniciar el torneo.");
+    throw new Error(datos.detail || "Error al iniciar el torneo en formato liga MX.");
   }
   return datos;
 }
@@ -145,7 +145,7 @@ export async function agregarEquipo(torneoId, datosEquipo) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(datosEquipo),
   });
@@ -281,16 +281,16 @@ export async function obtenerJornadasDelTorneo(torneoId) {
   // tipo_fase:str
   // partidos:list[PartidoOutSchema]=[]
   //  partidos ----->
-  // id:int
-  // equipo_local_id:int
-  // equipo_visita_id:Optional[int]=None #Valor por defecto porque puede ser partido de descanso
-  // goles_local:Optional[int]=None
-  // goles_visita:Optional[int]=None
-  // ganador_penales_id:Optional[int]=None
-  // fecha_hora: datetime
-  // cancha: str
-  // estado: str
-  // observaciones: Optional[str] = None
+      // id:int
+      // equipo_local_id:int
+      // equipo_visita_id:Optional[int]=None #Valor por defecto porque puede ser partido de descanso
+      // goles_local:Optional[int]=None
+      // goles_visita:Optional[int]=None
+      // ganador_penales_id:Optional[int]=None
+      // fecha_hora: datetime
+      // cancha: str
+      // estado: str
+      // observaciones: Optional[str] = None
 
   // # Objetos anidados de los equipos para mostrar nombre y escudo en React
   // equipo_local:Optional[EquipoOutSchema]=None

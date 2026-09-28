@@ -8,19 +8,37 @@ from datetime import timedelta,datetime
 from schemas.torneo import HoraCuartosSchema,HoraSemisSchema,HoraFinalSchema
 from routes.posiciones import obtener_tabla_posiciones
 
-def generar_calendario_round_robin(torneo_id:int,db:Session):
-    """Genera el calendario para un torneo.Si la lista de equipos es impar, un equipo descansa """
-    torneo=db.query(Torneo).filter(Torneo.id==torneo_id).first()
+def generar_calendario_liga_mx(torneo_id:int,db:Session):
+    """
+    Genera el calendario de fase regular.
+    Para el formato tipo Liga MX se requieren al menos 8 equipos para garantizar la Liguilla (Cuartos).
+    """ 
+    #Validar que el torneo exista   
+    torneo = db.query(Torneo).filter(Torneo.id == torneo_id).first()
+    if not torneo:
+        raise HTTPException(status_code=404, detail="Torneo no encontrado")
+
+    # Validar que el torneo este en registro (que no esta en curso o finalizdo)
+    if torneo.estado != "registro":
+        raise HTTPException(
+            status_code=400, detail="El torneo ya ha sido iniciado anteriormente"
+        )
     #Obtener los equipos que estan inscritos al torneo [Equipo1,Equipo2,Equipo3]
     inscripciones=db.query(TorneoEquipo).filter(TorneoEquipo.torneo_id==torneo_id).all()
     #Meter los IDs de los equipos en una lista
     lista_equipos=[]
     for i in inscripciones:
         lista_equipos.append(i.equipo_id)
-    
-    #Validar que haya minimo 2 equipos
-    if len(lista_equipos)<2:
-        raise HTTPException(status_code=400,detail='Se necesitan al menos 2 equipos para generar el calendario')
+        
+    # --- VALIDACIÓN DE FORMATO (LIGA MX) ---
+    # Al requerir liguilla desde Cuartos de Final, el torneo exige mínimo 8 equipos.
+    # FUTURO: Si agregas torneo.formato, aquí condicionas esta regla.
+    MINIMO_EQUIPOS_LIGA_MX=8
+    if len(lista_equipos) < MINIMO_EQUIPOS_LIGA_MX:
+        raise HTTPException(
+            status_code=400,
+            detail=f"El formato Liga MX requiere un mínimo de {MINIMO_EQUIPOS_LIGA_MX} equipos registrados para generar la Liguilla.",
+        )
     
     # Si la cantidad de equipos es impar, agregamos None (representa el descanso)
     if len(lista_equipos)%2!=0:
@@ -59,7 +77,6 @@ def generar_calendario_round_robin(torneo_id:int,db:Session):
             visitante_id = lista_equipos[num_equipos - 1 - j] #Posicion 9 :Equipo con id 2
 
             #Validar que tanto el local como el visitante tengan un equipo
-            #Si uno es None, significa que descansa y por tanto no se debe generar un partido
             if local_id is not None and visitante_id is not None:
                 nuevo_partido = Partido(
                     jornada_id=nueva_jornada.id, #Asignar el id de la jornada del for padre
@@ -80,6 +97,23 @@ def generar_calendario_round_robin(torneo_id:int,db:Session):
                 if cancha_actual > torneo.numero_canchas:
                     cancha_actual = 1
                     hora_bloque_actual= hora_bloque_actual+timedelta(hours=1)
+            
+            #Si uno es None, significa que descansa y por tanto no se debe generar un partido con estadp descanso
+            if local_id is None or visitante_id is None:
+                if local_id is not None:
+                    equipo_descansa=local_id
+                else:
+                    equipo_descansa=visitante_id
+                    
+                nuevo_partido = Partido(
+                    jornada_id=nueva_jornada.id,
+                    equipo_local_id=equipo_descansa,
+                    equipo_visita_id=None,
+                    fecha_hora=hora_bloque_actual,
+                    cancha='Descanso',
+                    estado="descanso"
+                )
+                db.add(nuevo_partido)
 
         #Este es para el for de las jornadas, es decir, para la jornada 2 el conjunto o la lista de equipos estara en diferente orden lo que permite nuevos emparejamientos
         #Ejemplo: Para la jornada 1 esta asi [1, 2, 3, 4] crea la jornada 1, entra al for para crear los partidos para la jornada 1 , cuando termina de crear los partidos de la jornada 1 llega aqui y ahora segunda iteracion la jornada 2 sera [1, 4, 2, 3] y se repite hasta llegar al numero de jornadas que se deben hacer con la cantidad de equipos que se tienen.
@@ -116,10 +150,12 @@ def generar_cuartos(torneo_id: int, datos: HoraCuartosSchema, db: Session):
 
     # Obtener posiciones
     posiciones = obtener_tabla_posiciones(torneo_id, db)
+    
     #Obtener solo los primeros 8 y guardo su ID del equipo
     clasificados = [p["equipo_id"] for p in posiciones[:8]]
     if len(clasificados) < 8:
-        raise HTTPException(status_code=400, detail="No hay suficientes equipos para cuartos")
+        raise HTTPException(
+            status_code=400, detail="No se encontraron 8 equipos clasificados para generar cuartos.")
 
     # Calcular fecha base
     ultima_jornada = db.query(Jornada).filter(Jornada.torneo_id == torneo_id).order_by(Jornada.numero_jornada.desc()).first()
@@ -192,14 +228,20 @@ def generar_semis(torneo_id: int, datos: HoraSemisSchema, db: Session):
         raise HTTPException(
             status_code=400, detail="No se pudieron determinar todos los ganadores de cuartos")
 
+    # Reordenar ganadores según su posición en la Tabla General (Re-sembrado estilo Liga MX)
+    tabla = obtener_tabla_posiciones(torneo_id, db)
+    posiciones_dict = {p["equipo_id"]: idx for idx, p in enumerate(tabla)}
+    ganadores.sort(key=lambda x: posiciones_dict.get(x, 999))
+
+    # Emparejamientos: El mejor clasificado vs el peor clasificado (1 vs 4, 2 vs 3)
+    emparejamientos = [(ganadores[0], ganadores[3]),
+                       (ganadores[1], ganadores[2])]
+    
     # Crear jornada semis.El numero de jornada sera apuntando a la jornada de cuartos y le suma +1. su fase correspondiente y torneo asociado
     jornada_semis = Jornada(numero_jornada=jornada_cuartos.numero_jornada+1, tipo_fase="semifinal", torneo_id=torneo_id)
     db.add(jornada_semis)
     db.flush()
 
-    # Emparejamientos semis
-    emparejamientos = [(ganadores[0], ganadores[3]),
-                       (ganadores[1], ganadores[2])]
     
     #7 dias despues del partido de fase cuartos
     fecha_semis = partidos_cuartos[0].fecha_hora + timedelta(days=7)
@@ -255,6 +297,11 @@ def generar_final(torneo_id: int, datos: HoraFinalSchema, db: Session):
         raise HTTPException(
             status_code=400, detail="No se pudieron determinar los ganadores de semis")
 
+    # Reordenar ganadores para definir quién es local/visita en la final según la tabla
+    tabla = obtener_tabla_posiciones(torneo_id, db)
+    posiciones_dict = {p["equipo_id"]: idx for idx, p in enumerate(tabla)}
+    ganadores.sort(key=lambda x: posiciones_dict.get(x, 999))
+    
     # Crear jornada final.Con el numero de jornada de la jornada de semis +1,su fase correspondiente y torneo asociado
     jornada_final = Jornada(numero_jornada=jornada_semis.numero_jornada+1, tipo_fase="final", torneo_id=torneo_id)
     db.add(jornada_final)

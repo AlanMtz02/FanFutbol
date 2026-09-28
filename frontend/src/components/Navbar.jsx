@@ -17,7 +17,6 @@ import {
   Users,
 } from "lucide-react";
 import { useState } from "react";
-import { ModalFase } from "./ModalFase";
 
 export const Navbar = ({
   usuario,
@@ -27,9 +26,6 @@ export const Navbar = ({
   activeTab,
   onTabChange,
   onIniciarTorneo,
-  jornadasDelTorneo,
-  equiposDelTorneo,
-  onRefreshTorneo,
 }) => {
   const navegacion = useNavigate();
   const inicial = usuario?.email ? usuario.email.charAt(0).toUpperCase() : "AD";
@@ -193,7 +189,6 @@ export const Navbar = ({
                 {torneo.numero_canchas}{" "}
                 {torneo.numero_canchas >= 2 ? "canchas" : "cancha"}
               </span>
-              {/*FALTA EL ONCLICK DE LOS BOTONES PARA INICIAR TORNEO */}
               {torneo.estado === "registro" && (
                 <button
                   className={styles.btnAdminPublic}

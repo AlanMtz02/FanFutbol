@@ -231,3 +231,10 @@
   background: #0065d0; /* azul suave translúcido */
   color: #ffffff;                      /* azul principal */
 }
+
+.partidoDescanso {
+  background: #f3f3f3;
+  border: 1px dashed #d1d5db;
+  color: #6b7280;
+  font-style: italic;
+}

@@ -72,8 +72,6 @@
   border: 1px solid #d1d5db;
   transition: background 0.2s ease, color 0.2s ease;
   cursor: pointer;
-
-
 }
 
 .activeTab:hover{

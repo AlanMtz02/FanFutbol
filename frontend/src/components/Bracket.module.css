@@ -1,0 +1,162 @@
+.errorBox {
+  margin-top: 12px;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+/* Contenedor con scroll horizontal en pantallas pequeñas */
+.contenedorPrincipal {
+  width: 100%;
+  overflow-x: auto;
+  padding: 20px 0;
+}
+
+/* Rejilla de 5 columnas iguales */
+.gridCincoColumnas {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(200px, 1fr));
+  gap: 15px;
+  align-items: center;
+  min-width: 1000px; /* Asegura que no se aplaste en pantallas pequeñas */
+}
+
+/* Estilos de cada columna del árbol */
+.columna {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Títulos normales de las fases */
+.tituloColumna {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+  color: #4b5563;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 5px;
+}
+
+/* Título especial resaltado para la Gran Final */
+.tituloFinal {
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+  color: #d97706;
+  border-bottom: 2px solid #f59e0b;
+  padding-bottom: 5px;
+}
+
+/* Contenedor vertical para dar espacio entre tarjetas */
+.contenedorPartidos {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  justify-content: center;
+}
+
+/* Estilo individual de la tarjeta de partido */
+.tarjetaPartido {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px 18px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tarjetaPartido:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Borde y fondo dorado especial para el partido de la Final */
+.tarjetaEspecialFinal {
+  border: 2px solid #f59e0b;
+  background-color: #fffbe0;
+}
+
+/* Alineación de escudo, nombre y marcador */
+.filaEquipo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  padding: 4px 0;
+}
+
+.filaEquipoFinal{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  padding: 4px 0;
+
+}
+
+.infoEquipo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.containerImagen{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  overflow: hidden;/*Recorta exceso*/
+
+}
+
+.imagenEscudo {
+  /*Abarca todo el div*/
+  width: 100%; 
+  height: 100%;
+  object-fit: cover;
+}
+
+.textoGoles {
+  font-weight: bold;
+  color: #111827;
+  background: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 6px;
+  min-width: 28px;
+  text-align: center;
+}
+
+/* Línea divisoria entre el local y la visita */
+.lineaSeparadora {
+  height: 1.2px;
+  background-color: #d2d3d6;
+  margin: 4px 0;
+}
+
+/* Texto que aparece mientras carga la API */
+.textoCargando {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+}
+
+.badgePenales {
+  text-align: center;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: #10b981; /* verde */
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 8px;
+  margin-top: 4px;
+}

@@ -6,7 +6,7 @@ from utils.seguridad import obtener_usuario_actual
 from models.torneo import Torneo
 from models.equipo import Equipo
 from datetime import datetime,timezone
-from services.calendario import generar_calendario_round_robin,generar_cuartos,generar_final,generar_semis
+from services.calendario import generar_calendario_liga_mx,generar_cuartos,generar_final,generar_semis
 from sqlalchemy import func
 from models.torneoequipo import TorneoEquipo
 torneos_router=APIRouter(prefix='/api/torneos',tags=['Torneos'])
@@ -108,13 +108,13 @@ def finalizar_torneo(
 
 #Generar el calendario
 #Requiere token
-@torneos_router.post('/{id}/generar-calendario')
-def generar_calendario_endpoint(id:int,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
+@torneos_router.post('/{id}/generar-calendario-liga-mx')
+def generar_calendario_liga_mx_endpoint(id:int,usuario_actual:dict=Depends(obtener_usuario_actual),db:Session=Depends(get_db)):
     """
-    Ruta Privada (Admin): Aplica el algoritmo Round Robin, genera las jornadas y 
-    partidos correspondientes, y pasa el torneo a estado 'en_curso'.
+    Ruta Privada (Admin): Aplica el formato Liga MX (Fase regular Round Robin), 
+    genera las jornadas y partidos correspondientes, y pasa el torneo a estado 'en_curso'.
     """
-    resultado=generar_calendario_round_robin(id,db)
+    resultado=generar_calendario_liga_mx(id,db)
     return resultado #Diccionario con un mensaje de exito
 
 #Requiere token
@@ -150,9 +150,7 @@ def pasar_a_cuartos(
     usuario_actual: dict = Depends(obtener_usuario_actual),
     db: Session = Depends(get_db)
 ):
-    """
-    Cambia torneo a fase 'cuartos' y genera jornada de cuartos con partidos.
-    """
+    """Liguilla Liga MX: Cambia torneo a fase 'cuartos' y genera la jornada correspondiente."""
     return generar_cuartos(id, datos, db)
 
 @torneos_router.post('/{id}/pasar-semis')
@@ -162,9 +160,7 @@ def pasar_a_semis(
     usuario_actual:dict=Depends(obtener_usuario_actual),
     db:Session=Depends(get_db)
 ):
-    """
-    Cambia torneo a fase 'semifinal' y genera jornada de semis con ganadores de cuartos.
-    """
+    """Liguilla Liga MX: Cambia torneo a fase 'semifinal' y genera la jornada correspondiente."""
     return generar_semis(id, datos, db)
 
 
@@ -175,7 +171,5 @@ def pasar_a_final(
     usuario_actual: dict = Depends(obtener_usuario_actual),
     db: Session = Depends(get_db)
 ):
-    """
-    Cambia torneo a fase 'final' y genera jornada de la final con ganadores de semis.
-    """
+    """Liguilla Liga MX: Cambia torneo a fase 'final' y genera la jornada correspondiente."""
     return generar_final(id, datos, db)
